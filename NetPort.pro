@@ -26,3 +26,6 @@ FORMS    += netport.ui \
 RESOURCES += \
     qresources.qrc
 
+DISTFILES += \
+    README.md
+
