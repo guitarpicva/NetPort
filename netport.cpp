@@ -166,11 +166,10 @@ void NetPort::serialDone()
         socket->flush();
         while(written < bytesToWrite)
         {
-            if(sretries > 20)
-                break;
+            if(sretries > 20) { break; }
             written += socket->write(serialBytes.mid(written));
             sretries++;
-            QThread::msleep(i_serialTimeoutMs);
+            QThread::msleep(i_serialTimeoutMs); // not sure if this is needed
         }
     }
     else
@@ -183,7 +182,7 @@ void NetPort::serialDone()
 
 void NetPort::tcpReadyRead()
 {
-    qDebug()<<"tcpReadyRead";
+    // qDebug()<<"tcpReadyRead";
     tcpTimeout->stop();
     tcpBytes.append(socket->readAll());
     tcpTimeout->start();
@@ -191,10 +190,10 @@ void NetPort::tcpReadyRead()
 
 void NetPort::tcpDone()
 {
-    qDebug()<<"tcpDone"<<tcpBytes;
+    // qDebug()<<"tcpDone"<<tcpBytes;
     tcpTimeout->stop();
     int bytesToWrite = tcpBytes.length();
-    int written = s_port->write(tcpBytes.replace("\n",""));
+    int written = s_port->write(tcpBytes.replace("\n","")); // why??
     s_port->flush();
     // if anything didn't get written
     // keep trying...up to 20 tries
@@ -205,20 +204,15 @@ void NetPort::tcpDone()
             break;
         written += s_port->write(tcpBytes.mid(written));
         tretries++;
-        QThread::msleep(i_tcpTimeoutMs);
+        QThread::msleep(i_tcpTimeoutMs); // not sure this is needed
     }
     tcpBytes.clear();
 }
 
 void NetPort::tcpConnectionOpened()
 {
-//    if (socket)
-//    {
-//        disconnect(socket, 0, 0, 0);
-//        socket->abort();
-//    }
-    //tcpDisconnected();
     if(socket) {
+        // only allow one connection to a serial port
         socket->disconnectFromHost();
         disconnect(socket, 0, 0, 0);
     }
