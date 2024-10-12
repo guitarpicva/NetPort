@@ -68,84 +68,13 @@ margin:2px;
         <property name="bottomMargin">
          <number>3</number>
         </property>
-        <item row="1" column="0">
-         <widget class="QGroupBox" name="groupBox_2">
-          <property name="minimumSize">
-           <size>
-            <width>50</width>
-            <height>50</height>
-           </size>
-          </property>
-          <property name="title">
-           <string>Serial</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_2">
-           <property name="topMargin">
-            <number>15</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QLabel" name="serialConnectedLabel">
-             <property name="minimumSize">
-              <size>
-               <width>20</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>20</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>Connected when Green.</string>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QLabel {background-color:red;}</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::NoTextInteraction</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QPushButton" name="configButton">
-          <property name="minimumSize">
-           <size>
-            <width>48</width>
-            <height>48</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>48</width>
-            <height>48</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Open Configuration Dialog</string>
-          </property>
+        <item row="0" column="0" colspan="3">
+         <widget class="QLabel" name="nameLabel">
           <property name="text">
-           <string/>
+           <string>Name</string>
           </property>
-          <property name="icon">
-           <iconset resource="qresources.qrc">
-            <normaloff>:/images/gear-outline.png</normaloff>:/images/gear-outline.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>24</width>
-            <height>24</height>
-           </size>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
@@ -198,14 +127,85 @@ margin:2px;
           </layout>
          </widget>
         </item>
-        <item row="0" column="0" colspan="3">
-         <widget class="QLabel" name="nameLabel">
+        <item row="1" column="1">
+         <widget class="QPushButton" name="configButton">
+          <property name="minimumSize">
+           <size>
+            <width>48</width>
+            <height>48</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>48</width>
+            <height>48</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Open Configuration Dialog</string>
+          </property>
           <property name="text">
-           <string>Name</string>
+           <string/>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
+          <property name="icon">
+           <iconset resource="qresources.qrc">
+            <normaloff>:/images/gear-outline.png</normaloff>:/images/gear-outline.png</iconset>
           </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Serial</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <property name="topMargin">
+            <number>15</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QLabel" name="serialConnectedLabel">
+             <property name="minimumSize">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Connected when Green.</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QLabel {background-color:red;}</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="textInteractionFlags">
+              <set>Qt::NoTextInteraction</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>

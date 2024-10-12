@@ -1,17 +1,17 @@
 // ----------------------------------------------------------------------------
-// Copyright (C) 2016 Mitch Winkle
+// Copyright (C) 2016-2024 Mitch Winkle
 // ALL RIGHTS RESERVED
 //
-// This file is part of Station Manager software project.  Station Manager is
+// This file is part of the NetPort software project.  NetPort is
 // NOT free software.  It has been released to the members of the Military
 // Auxiliary Radio System organization under no-cost terms.  That release
 // grant may be rescinded at any time by the author.
 //
-// Station Manager is distributed in the hope that it will be useful,
+// NetPort is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 //
-// Parts of Station Manager may contain source code from Open Source projects.
+// Parts of NetPort may contain source code from Open Source projects.
 // See the GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
