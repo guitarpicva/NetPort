@@ -83,7 +83,11 @@ void NetPort::connectToSerial()
     }
     // setup and open the serial port
     s_port = new QSerialPort(this);
+#ifdef Q_OS_LINUX
+    s_port->setPortName("/dev/" + s_serialPortName);
+#else
     s_port->setPortName(s_serialPortName);
+#endif
     s_port->setBaudRate(i_serialBaudRate);
     s_port->setFlowControl(QSerialPort::NoFlowControl);
     if (s_serialBitParams.mid(0, 1) == "8")
@@ -169,12 +173,13 @@ void NetPort::serialDone()
             if(sretries > 20) { break; }
             written += socket->write(serialBytes.mid(written));
             sretries++;
-            QThread::msleep(i_serialTimeoutMs); // not sure if this is needed
+            socket->flush();
+            //QThread::msleep(i_serialTimeoutMs); // not sure if this is needed
         }
     }
     else
     {
-        qDebug()<<"no socket";
+        //qDebug()<<"no socket";
         ui->netConnectedLabel->setStyleSheet("color:darkred");
     }
     serialBytes.clear(); // if no socket, send to bit bucket
@@ -190,10 +195,10 @@ void NetPort::tcpReadyRead()
 
 void NetPort::tcpDone()
 {
-    // qDebug()<<"tcpDone"<<tcpBytes;
+     qDebug()<<"tcpDone"<<tcpBytes;
     tcpTimeout->stop();
     int bytesToWrite = tcpBytes.length();
-    int written = s_port->write(tcpBytes.replace("\n","")); // why??
+    int written = s_port->write(tcpBytes); // why??
     s_port->flush();
     // if anything didn't get written
     // keep trying...up to 20 tries
@@ -204,7 +209,8 @@ void NetPort::tcpDone()
             break;
         written += s_port->write(tcpBytes.mid(written));
         tretries++;
-        QThread::msleep(i_tcpTimeoutMs); // not sure this is needed
+        s_port->flush();
+        //QThread::msleep(i_tcpTimeoutMs); // not sure this is needed
     }
     tcpBytes.clear();
 }
@@ -226,8 +232,8 @@ void NetPort::tcpConnectionOpened()
         connect(socket, &QTcpSocket::readyRead, this, &NetPort::tcpReadyRead);
     }
     //qDebug()<<"socket connection"<<socket->peerAddress().toString();
-    qDebug()<<"Send IF;";
-    socket->write("IF;");
+    //qDebug()<<"Send IF;";
+    socket->write("\r\n");
     socket->flush();
 }
 

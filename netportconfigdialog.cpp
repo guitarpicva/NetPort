@@ -60,8 +60,7 @@ void NetPortConfigDialog::loadSettings()
     ui->displayNameLineEdit->setText(settings->value(tr("deviceName"),"").toString());
     QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
     QStringList portlist;
-    foreach(const QSerialPortInfo i, ports)
-        portlist << i.portName();
+    foreach(const QSerialPortInfo i, ports) { portlist << i.portName(); }
     ui->serialPortNameComboBox->addItems(portlist);
     ui->serialPortNameComboBox->setCurrentText(settings->value(tr("serialPortName"), "COM1").toString());
     ui->ipAddressLineEdit->setText(settings->value(tr("ipAddress"), "127.0.0.1").toString());
