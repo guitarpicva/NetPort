@@ -85,6 +85,8 @@ void NetPort::connectToSerial()
     s_port = new QSerialPort(this);
 #ifdef Q_OS_LINUX
     s_port->setPortName("/dev/" + s_serialPortName);
+#elif Q_OS_MAC
+    s_port->setPortName("/dev/" + s_serialPortName);
 #else
     s_port->setPortName(s_serialPortName);
 #endif
