@@ -27,19 +27,11 @@
 #include <QCloseEvent>
 #include <QThread>
 
-NetPort::NetPort(const QString iniFile, QWidget *parent) :
+NetPort::NetPort(const QString name, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::NetPort)
 {
     ui->setupUi(this);
-    cfgIniFile = iniFile;
-    //qDebug()<<"cfgIniFile"<<cfgIniFile;
-    loadSettings();
-    connectToSerial();
-
-    QWidget::setWindowTitle("NetPort - " + versionNumber);
-    this->restoreGeometry(settings->value("geometry").toByteArray());
-    //this->restoreState(settings->value("windowState").toByteArray());
 }
 
 NetPort::~NetPort()
@@ -47,31 +39,38 @@ NetPort::~NetPort()
     delete ui;
 }
 
-void NetPort::closeEvent(QCloseEvent * event)
-{
-    // save GUI state
-    settings->setValue("geometry", saveGeometry());
-    if(socket)
-    {
-        socket->blockSignals(true);
-        socket->disconnectFromHost();
-    }
-    //settings->setValue("windowState", saveState());
-    if(event) // pass the close event up the line
-        event->accept();
-}
+// void NetPort::closeEvent(QCloseEvent * event)
+// {
+//     // save GUI state
+//     settings->setValue("geometry", saveGeometry());
+//     if(socket)
+//     {
+//         socket->blockSignals(true);
+//         socket->disconnectFromHost();
+//     }
+//     //settings->setValue("windowState", saveState());
+//     if(event) // pass the close event up the line
+//         event->accept();
+// }
 
 void NetPort::loadSettings()
 {
     settings = new QSettings(cfgIniFile, QSettings::IniFormat, this);
-    i_tcpPort = settings->value(tr("tcpPort"), 9876).toInt();
-    s_ipAddress = settings->value(tr("ipAddress"), "127.0.0.1").toString();
-    s_serialPortName = settings->value(tr("serialPortName"), "COM4").toString();
-    s_serialBitParams = settings->value(tr("serialBitParams"), "8N1").toString();
-    i_serialBaudRate = settings->value(tr("serialBaudRate"), 38400).toInt();
-    i_serialTimeoutMs = settings->value(tr("serialTimeoutMs"), 40).toInt();
-    i_tcpTimeoutMs = settings->value(tr("tcpTimeoutMs"), 20).toInt();
-    ui->nameLabel->setText(settings->value(tr("deviceName"), "DEVICE").toString());
+    settings->beginGroup(this->objectName());
+    // qDebug()<<"objectNameIn:"<<this->objectName();
+    i_tcpPort = settings->value("tcpPort", 9876).toInt();
+    s_ipAddress = settings->value("ipAddress", "127.0.0.1").toString();
+    s_serialPortName = settings->value("serialPortName", "COM4").toString();
+    s_serialBitParams = settings->value("serialBitParams", "8N1").toString();
+    i_serialBaudRate = settings->value("serialBaudRate", 38400).toInt();
+    i_serialTimeoutMs = settings->value("serialTimeoutMs", 40).toInt();
+    i_tcpTimeoutMs = settings->value("tcpTimeoutMs", 20).toInt();
+    const QString dev = settings->value("deviceName", "DEVICE").toString();
+    ui->nameLabel->setText(dev);
+    this->setObjectName(dev);
+    // qDebug()<<"objectNameOut:"<<this->objectName();
+    settings->endGroup();
+    connectToSerial();
 }
 
 void NetPort::connectToSerial()
@@ -112,7 +111,7 @@ void NetPort::connectToSerial()
     if (s_port->open(QSerialPort::ReadWrite))
     {
         connect(s_port, &QSerialPort::readyRead, this, &NetPort::serialReadyRead);
-        ui->serialConnectedLabel->setStyleSheet("background-color:green;border:1px solid green;border-radius:10px;color:white;");
+        ui->serialConnectedLabel->setStyleSheet("background-color:green;border:1px solid black;border-radius:10px;color:white;");
         ui->serialConnectedLabel->setToolTip(s_port->portName());
         startServer();
         serialTimeout = new QTimer(this);
@@ -121,10 +120,11 @@ void NetPort::connectToSerial()
         tcpTimeout = new QTimer(this);
         tcpTimeout->setInterval(i_tcpTimeoutMs);
         connect(tcpTimeout, &QTimer::timeout, this, &NetPort::tcpDone);
-    } else
-    {
-        QMessageBox::information(this, "NO SERIAL CONNECTION", "NetPort was unable to make a connection to the serial port.\n\nPlease check your configuration and try again.");
     }
+    // else
+    // {
+    //     QMessageBox::information(this, "NO SERIAL CONNECTION", "NetPort was unable to make a connection to the serial port.\n\nPlease check your configuration and try again.");
+    // }
 }
 
 void NetPort::startServer()
@@ -142,7 +142,7 @@ void NetPort::startServer()
     server->listen(QHostAddress(s_ipAddress), i_tcpPort);
     if (server->isListening())
     {
-        ui->netConnectedLabel->setStyleSheet("background-color:blue;color:white;border:1px solid blue;border-radius:10px;");
+        ui->netConnectedLabel->setStyleSheet("background-color:#0055ff;color:white;border:1px solid black;border-radius:10px;");
         ui->netConnectedLabel->setToolTip("Listening on " + s_ipAddress + ":" + QString::number(i_tcpPort));
         connect(server, &QTcpServer::newConnection, this, &NetPort::tcpConnectionOpened);
     }
@@ -228,7 +228,7 @@ void NetPort::tcpConnectionOpened()
     socket = server->nextPendingConnection();
     if (socket->isOpen())
     {
-        ui->netConnectedLabel->setStyleSheet("background-color:green;color:white;border:1px solid green;border-radius:10px;");
+        ui->netConnectedLabel->setStyleSheet("background-color:green;color:white;border:1px solid black;border-radius:10px;");
         ui->netConnectedLabel->setToolTip("CONNECTED " + socket->peerAddress().toString() + ":" + QString::number(socket->localPort()));
         connect(socket, &QTcpSocket::disconnected, this, &NetPort::tcpDisconnected);
         connect(socket, &QTcpSocket::readyRead, this, &NetPort::tcpReadyRead);
@@ -251,7 +251,7 @@ void NetPort::tcpDisconnected()
     {
         if(ui->netConnectedLabel && ui->netConnectedLabel->isVisible())
         {
-            ui->netConnectedLabel->setStyleSheet("background-color:blue;color:white;border:1px solid blue;border-radius:10px;");
+            ui->netConnectedLabel->setStyleSheet("background-color:#0055ff;color:white;border:1px solid black;border-radius:10px;");
             ui->netConnectedLabel->setToolTip("Listening on " + s_ipAddress + ":" + QString::number(i_tcpPort));
         }
     }
@@ -259,22 +259,22 @@ void NetPort::tcpDisconnected()
 
 void NetPort::on_configButton_clicked()
 {
-    NetPortConfigDialog * conf = new NetPortConfigDialog(cfgIniFile, this);
+    NetPortConfigDialog * conf = new NetPortConfigDialog(this->objectName(), this);
+    // passthrough signal to NPWindow via NetPort
     connect(conf, &NetPortConfigDialog::settingsSaved, this, &NetPort::on_settingsSaved);
     conf->setVisible(true);
 }
 
-void NetPort::on_settingsSaved()
+void NetPort::on_settingsSaved() // not currently used...
 {
     // settings have changed so update all ports
-    if(serialTimeout)
-        serialTimeout->stop();
-    if(tcpTimeout)
-        tcpTimeout->stop();
-    //qDebug()<<"load settings";
-    loadSettings();
-    //qDebug()<<"connect to serial";
-    connectToSerial();
-    //qDebug()<<"start server";
-    startServer();
+    if(serialTimeout) { serialTimeout->stop(); }
+    if(tcpTimeout) { tcpTimeout->stop(); }
+    // //qDebug()<<"load settings";
+    // loadSettings();
+    // //qDebug()<<"connect to serial";
+    // connectToSerial();
+    // //qDebug()<<"start server";
+    // startServer();
+    emit settingsSaved();
 }

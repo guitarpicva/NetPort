@@ -27,12 +27,14 @@
 QString myIniFile;
 QSettings * settings = 0;
 
-NetPortConfigDialog::NetPortConfigDialog(const QString iniFile, QWidget *parent) :
+NetPortConfigDialog::NetPortConfigDialog(QString name, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NetPortConfigDialog)
 {
     ui->setupUi(this);
-    myIniFile = iniFile;
+    myIniFile = "NetPort.ini";
+    npname = name;
+    qDebug()<<"npname:"<<npname;
     NetPortConfigDialog::setAttribute(Qt::WA_DeleteOnClose);
     settings = new QSettings(myIniFile, QSettings::IniFormat, this);
     loadSettings();
@@ -46,8 +48,8 @@ NetPortConfigDialog::~NetPortConfigDialog()
 void NetPortConfigDialog::on_saveButton_clicked()
 {
     saveSettings();
-    emit(settingsSaved());
-    this->close();
+    // emit(settingsSaved());
+    //close();
 }
 
 void NetPortConfigDialog::on_cancelButton_clicked()
@@ -57,29 +59,59 @@ void NetPortConfigDialog::on_cancelButton_clicked()
 
 void NetPortConfigDialog::loadSettings()
 {
-    ui->displayNameLineEdit->setText(settings->value(tr("deviceName"),"").toString());
+    settings->beginGroup(npname);
+    const QString dev = settings->value(tr("deviceName"), "DEVICE").toString();
+    ui->displayNameLineEdit->setText(dev);
     QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
     QStringList portlist;
     foreach(const QSerialPortInfo i, ports) { portlist << i.portName(); }
     ui->serialPortNameComboBox->addItems(portlist);
-    ui->serialPortNameComboBox->setCurrentText(settings->value(tr("serialPortName"), "COM1").toString());
+    QString tmp = settings->value("serialPortName", "").toString();
+    if(!tmp.isEmpty()) {
+            ui->serialPortNameComboBox->setCurrentText(tmp);
+    }
     ui->ipAddressLineEdit->setText(settings->value(tr("ipAddress"), "127.0.0.1").toString());
-    ui->tcpPortLineEdit->setText(settings->value(tr("tcpPort"), "9876").toString());
+    ui->tcpPortSpinBox->setValue(settings->value(tr("tcpPort"), 9876).toInt());
     ui->tcpPortTimeoutSpinBox->setValue(settings->value(tr("tcpPortTimeout"), 20).toInt());
     ui->serialBitParamsComboBox->setCurrentText(settings->value(tr("serialBitParams"), "8N1").toString());
     ui->serialBaudRateComboBox->setCurrentText(settings->value(tr("serialBaudRate"), "38400").toString());
     ui->serialPortTimeoutSpinBox->setValue(settings->value(tr("serialPortTimeout"), 40).toInt());
+    settings->endGroup();
 }
 
 void NetPortConfigDialog::saveSettings()
 {
-    //qDebug()<<"saveSettings"<<settings;
-    settings->setValue(tr("deviceName"), ui->displayNameLineEdit->text().trimmed());
-    settings->setValue("serialPortName", ui->serialPortNameComboBox->currentText());
-    settings->setValue("serialBaudRate", ui->serialBaudRateComboBox->currentText());
-    settings->setValue("serialBitParams", ui->serialBitParamsComboBox->currentText());
-    settings->setValue("serialPortTimeout", ui->serialPortTimeoutSpinBox->value());
-    settings->setValue("ipAddress", ui->ipAddressLineEdit->text().trimmed());
-    settings->setValue("tcpPort", ui->tcpPortLineEdit->text().trimmed());
-    settings->setValue("tcpPortTimeout", ui->tcpPortTimeoutSpinBox->value());
+    const QString newdev = ui->displayNameLineEdit->text().trimmed().toUpper();
+    qDebug()<<"saveSettings"<<npname<<newdev;
+    if(newdev == "DEVICE") {
+        return;
+    }
+    if(npname != newdev) {
+        qDebug()<<"rename device"<<newdev;
+        settings->beginGroup(newdev);
+        settings->setValue("deviceName", newdev);
+        settings->setValue("serialPortName", ui->serialPortNameComboBox->currentText());
+        settings->setValue("serialBaudRate", ui->serialBaudRateComboBox->currentText());
+        settings->setValue("serialBitParams", ui->serialBitParamsComboBox->currentText());
+        settings->setValue("serialPortTimeout", ui->serialPortTimeoutSpinBox->value());
+        settings->setValue("ipAddress", ui->ipAddressLineEdit->text().trimmed());
+        settings->setValue("tcpPort", ui->tcpPortSpinBox->value());
+        settings->setValue("tcpPortTimeout", ui->tcpPortTimeoutSpinBox->value());
+        settings->endGroup();
+        settings->beginGroup(npname);
+        settings->remove("");
+    }
+    else {
+        settings->beginGroup(npname);
+        //settings->setValue("deviceName", newdev);
+        settings->setValue("serialPortName", ui->serialPortNameComboBox->currentText());
+        settings->setValue("serialBaudRate", ui->serialBaudRateComboBox->currentText());
+        settings->setValue("serialBitParams", ui->serialBitParamsComboBox->currentText());
+        settings->setValue("serialPortTimeout", ui->serialPortTimeoutSpinBox->value());
+        settings->setValue("ipAddress", ui->ipAddressLineEdit->text().trimmed());
+        settings->setValue("tcpPort", ui->tcpPortSpinBox->value());
+        settings->setValue("tcpPortTimeout", ui->tcpPortTimeoutSpinBox->value());
+        settings->endGroup();
+    }
+    emit settingsSaved();
 }

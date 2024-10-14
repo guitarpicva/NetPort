@@ -17,13 +17,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ----------------------------------------------------------------------------
-#include "netport.h"
+#include "npwindow.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
+    // QApplication a(argc, argv);
+    // NPWindow w();
+    // w.show();
     QApplication a(argc, argv);
-    NetPort w("NetPort.ini");
+    QApplication::setStyle("Fusion");
+    NPWindow w;
     w.show();
 
     return a.exec();

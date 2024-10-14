@@ -37,14 +37,16 @@ class NetPort : public QWidget
     Q_OBJECT
 
 public:
-    explicit NetPort(const QString iniFile, QWidget *parent = 0);
+    explicit NetPort(const QString name, QWidget *parent = 0);
     ~NetPort();
-
+signals:
+    void settingsSaved();
 public slots:
     void on_settingsSaved();
-private slots:
-    void closeEvent(QCloseEvent *event);
+    void loadSettings();
     void on_configButton_clicked();
+
+private slots:
     void serialDone();
     void tcpDone();
     void tcpConnectionOpened();
@@ -54,7 +56,6 @@ private slots:
 private:
     Ui::NetPort *ui;
     const QString versionNumber = QString(__DATE__);
-    void loadSettings();
     void connectToSerial();
     void startServer();
     QSettings *settings = nullptr;
@@ -64,7 +65,7 @@ private:
     QString s_ipAddress = "127.0.0.1";
     QString s_serialPortName = "COM1";
     QString s_serialBitParams = "8N1";
-    QString cfgIniFile = "";
+    QString cfgIniFile = "NetPort.ini";
     int i_serialBaudRate = 38400;
     int i_serialTimeoutMs = 50;
     int i_tcpTimeoutMs = 10;

@@ -15,13 +15,16 @@ RC_ICONS = RCSIcon.ico
 
 SOURCES += main.cpp\
         netport.cpp \
-    netportconfigdialog.cpp
+    netportconfigdialog.cpp \
+    npwindow.cpp
 
 HEADERS  += netport.h \
-    netportconfigdialog.h
+    netportconfigdialog.h \
+    npwindow.h
 
 FORMS    += netport.ui \
-    netportconfigdialog.ui
+    netportconfigdialog.ui \
+    npwindow.ui
 
 RESOURCES += \
     qresources.qrc

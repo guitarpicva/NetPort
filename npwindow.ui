@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NPWindow</class>
+ <widget class="QMainWindow" name="NPWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>218</width>
+    <height>118</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>NetPort</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="leftMargin">
+     <number>3</number>
+    </property>
+    <property name="topMargin">
+     <number>3</number>
+    </property>
+    <property name="rightMargin">
+     <number>3</number>
+    </property>
+    <property name="bottomMargin">
+     <number>3</number>
+    </property>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>218</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_Create">
+    <property name="title">
+     <string>&amp;Create</string>
+    </property>
+    <addaction name="action_New_NetPort"/>
+   </widget>
+   <widget class="QMenu" name="menu_Remove">
+    <property name="title">
+     <string>&amp;Remove</string>
+    </property>
+    <addaction name="action_NetPort"/>
+   </widget>
+   <addaction name="menu_Create"/>
+   <addaction name="menu_Remove"/>
+  </widget>
+  <action name="action_New_NetPort">
+   <property name="text">
+    <string>&amp;New NetPort</string>
+   </property>
+  </action>
+  <action name="action_NetPort">
+   <property name="text">
+    <string>Existing &amp;NetPort</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

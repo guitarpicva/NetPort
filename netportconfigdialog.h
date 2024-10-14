@@ -32,16 +32,16 @@ class NetPortConfigDialog : public QDialog
 signals:
     void settingsSaved();
 public:
-    explicit NetPortConfigDialog(const QString iniFile, QWidget *parent = 0);
+    explicit NetPortConfigDialog(QString name, QWidget *parent = 0);
     ~NetPortConfigDialog();
 
 private slots:
     void on_saveButton_clicked();
-
     void on_cancelButton_clicked();
 
 private:
     Ui::NetPortConfigDialog *ui;
+    QString npname;
     void saveSettings();
     void loadSettings();
 };
